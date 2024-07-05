@@ -1,0 +1,24 @@
+services:
+  social_database:
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: app_user
+      POSTGRES_DB: app_db
+      POSTGRES_PASSWORD: app_password
+    ports:
+      - "8432:5432"
+
+  social_app:
+    image: social_app
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - social_database
+    environment:
+      DATABASE_URL: postgresql+psycopg://app_user:app_password@social_database:5432/app_db
+
+volumes:
+  pgdata:
